@@ -1,0 +1,183 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: 43.0845457
+  longitude: -79.134574
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 0
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: America/Toronto
+  # Customization file
+  customize: !include customize.yaml
+
+# Show links to resources in log and frontend
+#introduction:
+
+# Enables the frontend
+frontend:
+  themes: !include themes.yaml
+# Enables configuration UI
+config:
+
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+# http:
+#   base_url: example.duckdns.org:8123
+
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+updater:
+  # Optional, allows Home Assistant developers to focus on popular components.
+  # include_used_components: true
+
+# Discover some devices automatically
+discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time
+history:
+
+# View all events in a logbook
+logbook:
+
+# Enables a map showing the location of tracked devices
+map:
+
+# Track the sun
+sun:
+
+# Allow diagnosing system problems
+system_health:
+
+# Set yaml as ui page
+lovelace:
+  mode: yaml
+  
+custom_updater:
+  card_urls:
+    - https://raw.githubusercontent.com/ljmerza/calendar-card/master/custom_updater.json
+    - https://raw.githubusercontent.com/atomic7777/atomic_calendar/master/tracker.json
+
+# Sensors
+sensor:
+  - platform: time_date
+    display_options:
+      - 'time'
+      - 'date'
+      - 'date_time'
+      - 'time_date'
+
+weather:
+  - platform: darksky
+    api_key: !secret DarkSky_API
+    mode: daily
+
+# Text to speech
+tts:
+  - platform: google_translate
+    service_name: google_say
+
+# Cloud
+cloud:
+
+#Google Calendar
+google:
+  client_id: !secret GoogleCalendarAPI
+  client_secret: !secret GoogleCalendarSecret
+    
+
+# Lutron Caseta Bridge IP and security key
+lutron_caseta:
+  host: 192.168.1.15
+  keyfile: /ssl/lutron/caseta.key
+  certfile: /ssl/lutron/caseta.crt
+  ca_certs: /ssl/lutron/caseta-bridge.crt
+  
+#  Configuration id and secret for Nest Thermostat
+nest:
+    client_id: !secret Nest_Client_ID
+    client_secret: !secret Nest_Client_Secret
+    
+camera:
+  - platform: mjpeg
+    mjpeg_url: http://192.168.1.44:81/mjpg/Cam1
+    name: Front_door
+    username: !secret BI_username
+    password: !secret BI_password
+    authentication: basic    
+    
+  - platform: mjpeg
+    mjpeg_url: http://192.168.1.44:81/mjpg/Cam2
+    name: Connor
+    username: !secret BI_username
+    password: !secret BI_password
+    authentication: basic
+    
+  - platform: generic
+    name: gmaps
+    still_image_url: !secret Google_Maps_URL
+    limit_refetch_to_url_change: true
+    
+  - platform: generic
+    still_image_url: 'https://radblast.wunderground.com/cgi-bin/radar/WUNIDS_map?station=BUF&brand=wui&num=10&delay=15&type=N0R&frame=0&scale=1.000&noclutter=0&showstorms=0&mapx=400&mapy=240&centerx=400&centery=240&transx=0&transy=0&showlabels=1&severe=0&rainsnow=1&lightning=0&smooth=0&rand=25938881&lat=0&lon=0&label=you'
+    name: Weather_Radar
+    
+device_tracker:
+  - platform: google_maps    
+    username: !secret Gmaps_username
+    password: !secret Gmaps_password
+    
+  - platform: netgear
+    host: 192.168.1.1
+    port: 80
+    username: !secret Router_username
+    password: !secret Router_password
+    new_device_defaults:
+      track_new_devices: true
+      hide_if_away: false
+      
+tuya:
+  username: !secret Tuya_username
+  password: !secret Tuya_password
+  country_code: 1
+  
+zone:
+  - name: BJJ
+    latitude: !secret BJJ_lat
+    longitude: !secret BJJ_long
+    radius: 50
+  - name: Work
+    latitude: !secret Work_lat
+    longitude: !secret Work_long
+    radius: 250
+  - name: Ackers
+    latitude: !secret Ackers_lat
+    longitude: !secret Ackers_long
+    radius: 50
+  - name: Mom's House
+    latitude: !secret Moms_lat
+    longitude: !secret Moms_long
+    radius: 50
+    
+input_boolean:
+  good_night:
+    name: Night Routine
+    initial: off
+  good_morning:
+    name: Morning Routine
+    initial: off
+  goodbye:
+    name: Goodbye Routine
+    initial: off    
+
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml

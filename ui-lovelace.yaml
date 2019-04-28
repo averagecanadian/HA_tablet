@@ -1,0 +1,164 @@
+title: My Awesome Home
+# Include external resources
+resources:
+#  - url: /local/my-custom-card.js
+#    type: js
+#  - url: /local/my-webfont.css
+#    type: css
+  - url: /customcards/github/thomasloven/card-tools.js?track=true&debug
+    type: js
+  - url: /customcards/github/thomasloven/popup-card.js?track=true&debug
+    type: js
+  - url: /customcards/github/thomasloven/slider-entity-row.js?track=true&debug
+    type: js    
+  - url: /local/kiosk.js?v=1.1
+    type: js    
+  - url: /local/atomic-calendar.js?track=true&debug
+    type: module    
+    
+# Optional background for all views. Check https://developer.mozilla.org/en-US/docs/Web/CSS/background for more examples.
+background: center / cover no-repeat url("/background.png") fixed
+# Exclude entities from "Unused entities" view
+excluded_entities:
+  - weblink.router
+
+views:
+    # View tab title.
+  - title: Home
+    icon: mdi:home
+    id: kiosk    
+    # Unique path for direct access /lovelace/${path}
+    popup_cards:      
+      device_tracker.google_maps_110244927439938210243:
+        title: Richards Location
+        Large: true
+        card:
+          type: picture-entity
+          entity: camera.gmaps
+          camera_image: camera.gmaps        
+#          type: map
+#          default_zoom: 14
+#          entities:
+#            - device_tracker.google_maps_110244927439938210243            
+      device_tracker.missy_s_phone:
+        title: Missy's Location
+        Large: true
+        card:
+          type: picture-entity
+          entity: camera.gmaps
+          camera_image: camera.gmaps
+      sensor.hallway_thermostat_temperature:
+        title: Thermostat
+        Large: true
+        card:
+          type: thermostat
+          entity: climate.hallway
+      weather.dark_sky:
+        title: Weather Radar
+        Large: true
+        card:
+          type: picture-entity
+          entity: camera.weather_radar
+    path: home
+    # Optional background (overwrites the global background).
+    #background: radial-gradient(darkgrey, grey)
+    background: #191d23
+    # Each view can have a different theme applied. Theme should be defined in the frontend.
+    #theme: dark-mode
+    # The cards to show on this view.
+    cards:      
+      - type: vertical-stack
+        cards:
+          - type: glance 
+            title: Home 
+            panel: true
+            entities:
+              - entity: device_tracker.google_maps_110244927439938210243
+                name: Richard
+              - entity: device_tracker.missy_s_phone
+              - camera.connor
+              - entity: sensor.hallway_thermostat_temperature
+                name: Thermostat
+          - type: picture-entity
+            name: Front Door
+            entity: camera.front_door
+            camera_image: camera.front_door
+            #camera_view: live
+          - type: entities
+            entities:
+              - switch.shed
+              - entity: switch.dinning_room
+                name: Dining Room
+              - entity: switch.85074677600194aec672
+                name: Computer Room
+              - type: custom:slider-entity-row
+                entity: light.living_room_main_lights
+                name: Living Room Lights
+              - type: custom:slider-entity-row
+                entity: light.dining_room_main_lights
+                name: Dining Room Lights
+      - type: vertical-stack
+        cards:
+          - type: weather-forecast
+            entity: weather.dark_sky
+          - type: horizontal-stack
+            cards:              
+              - type: picture-entity
+                entity: input_boolean.good_night                
+                state_image:
+                  "off": /local/goodnight_off.png
+                  "on": /local/goodnight_on.png                
+                show_state: false
+                show_name: false
+                tap_action:
+                  action: toggle
+              - type: picture-entity
+                entity: input_boolean.good_morning                
+                state_image:
+                  "off": /local/morning_off.png
+                  "on": /local/morning_on.png                
+                show_state: false
+                show_name: false
+                tap_action:
+                  action: toggle                
+              - type: picture-entity
+                entity: input_boolean.goodbye
+                state_image:
+                  "off": /local/bye_off.png
+                  "on": /local/bye_off.png
+                show_state: false
+                show_name: false
+                tap_action:
+                  action: call-service
+                  service: homeassistant.turn_on
+                  entity_id: switch.shed
+          - type: horizontal-stack
+            cards:                              
+            - type: custom:atomic-calendar
+              title: "Events"
+              timeColor: white
+              showProgressBar: false
+              locationTextSize: 0
+              maxDaysToShow: 20           
+              entities:
+                - calendar.rdonnell_gmail_com                  
+            - type: picture-elements    
+              image: /local/bg.png
+              elements:      
+                - type: state-label
+                  entity: sensor.time
+                  style:
+                    top: 35%
+                    left: 50%
+                    font-size: 5vw
+                    color: white
+    
+                - type: state-label
+                  entity: sensor.date
+                  style:
+                    top: 70%
+                    left: 50%
+                    font-size: 2vw
+                    color: white
+                
+              
